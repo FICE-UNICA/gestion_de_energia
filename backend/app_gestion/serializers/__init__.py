@@ -6,7 +6,9 @@ from .municipio import MunicipioSerializer
 from .provincia import ProvinciaSerializer
 from .servicio_electrico import ServicioElectricoSerializer
 from .nae import NAESerializer
-
+from .fuentes_renovables import FuentesRenovablesSerializer
+from .categoria_sistema_energetico import CategoriaSistemaEnergeticoSerializer
+from .sistemas_energeticos import SistemasEnergeticosSerializer
 
 
 __all__ = [
@@ -18,6 +20,7 @@ __all__ = [
     'MunicipioSerializer',
     'ProvinciaSerializer',
     'ServicioElectricoSerializer',
-   
-    
+    'FuentesRenovablesSerializer',
+    'CategoriaSistemaEnergeticoSerializer',
+    'SistemasEnergeticosSerializer',
 ]

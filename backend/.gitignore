@@ -4,3 +4,4 @@ frontend
 .env
 comandos
 run.sh
+.vscode

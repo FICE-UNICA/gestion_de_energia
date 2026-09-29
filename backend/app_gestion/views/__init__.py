@@ -7,8 +7,12 @@ from .provincia_views import ProvinciaViewSet
 from .servicio_electrico_views import ServicioElectricoViewSet
 from .user_views import UserViewSet
 from .nae_views import NAEViewSet
+from .fuentes_renovables_views import FuentesRenovablesViewSet
+from .categoria_sistema_energetico_views import CategoriaSistemaEnergeticoViewSet
+from .sistemas_energeticos_views import SistemasEnergeticosViewSet
 from .consultas.consumo_por_mes import ConsumoPorMesView
 from .consultas.entidades_mayor_consumo import TopEntidadesConsumoView
+
 __all__ = [
     'NAEViewSet',
     'login',
@@ -22,9 +26,9 @@ __all__ = [
     'MunicipioViewSet',
     'ProvinciaViewSet',
     'ServicioElectricoViewSet',
+    'FuentesRenovablesViewSet',
+    'CategoriaSistemaEnergeticoViewSet',
+    'SistemasEnergeticosViewSet',
     'ConsumoPorMesView',
     'TopEntidadesConsumoView',
-  
-    
-   
 ]

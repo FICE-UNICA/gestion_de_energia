@@ -6,15 +6,20 @@ from rest_framework.permissions import IsAuthenticated
 from django.db.models import Sum, Q
 from ...models import Servicio_electrico
 
+
 class TopEntidadesConsumoView(APIView):
     """
-    Endpoint para las 10 entidades de mayor consumo en un año VISUAL.
+    Endpoint para las N entidades de mayor consumo en un año VISUAL.
     Parámetros:
         - anio (en URL): año visual.
         - unidad (query): 'kWh', 'MWh' o 'GWh' (por defecto 'kWh').
+        - limit (query): entero entre 10 y 100 en pasos de 10 (por defecto 10).
     """
     authentication_classes = [CookieTokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+    LIMITES_VALIDOS = {10, 20, 30, 40, 50, 60, 70, 80, 90, 100}
+    LIMITE_DEFAULT = 10
 
     def get(self, request, anio):
         try:
@@ -29,6 +34,21 @@ class TopEntidadesConsumoView(APIView):
         if unidad not in ('KWH', 'MWH', 'GWH'):
             unidad = 'KWH'
 
+        # Validar `limit`
+        limit_raw = request.query_params.get('limit')
+        if limit_raw is None:
+            limit = self.LIMITE_DEFAULT
+        else:
+            try:
+                limit = int(limit_raw)
+            except (TypeError, ValueError):
+                limit = self.LIMITE_DEFAULT
+
+            if limit not in self.LIMITES_VALIDOS:
+                # Si no es válido, lo redondeamos al múltiplo de 10 más cercano,
+                # acotado entre 10 y 100.
+                limit = max(10, min(100, round(limit / 10) * 10))
+
         # Condición: meses reales del período visual:
         # - Meses 2 a 12 del año visual
         # - Mes 1 del año siguiente
@@ -39,7 +59,7 @@ class TopEntidadesConsumoView(APIView):
             .filter(condicion)
             .values('entidad__nombre', 'entidad__codigo_REEUP')
             .annotate(consumo_total=Sum('consumo_real'))
-            .order_by('-consumo_total')[:10]
+            .order_by('-consumo_total')[:limit]
         )
 
         data = []
@@ -57,4 +77,11 @@ class TopEntidadesConsumoView(APIView):
                 "consumo_total": total
             })
 
-        return Response(data, status=status.HTTP_200_OK)
+        return Response(
+            {
+                "limit": limit,
+                "unidad": unidad,
+                "resultados": data,
+            },
+            status=status.HTTP_200_OK
+        )

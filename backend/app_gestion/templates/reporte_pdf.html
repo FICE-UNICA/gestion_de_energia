@@ -53,9 +53,17 @@
     <p>Generado el {{ fecha_generacion }}</p>
 
     {# Solo mostrar año y unidad para consultas que realmente los requieren #}
-    {% if consulta != 'info' and consulta != 'servicios' and consulta != 'sin_servicio' and consulta != 'sin_nombre'%}
+    {% if consulta != 'info' and consulta != 'servicios' and consulta != 'sin_servicio' and consulta != 'sin_nombre' and consulta != 'entidades_por_fuente' and consulta != 'entidades_por_sistema' %}
     <p>Año: {{ anio|default:"—" }}</p>
-    <p>Unidad: {{ unidad }}</p>
+    <p>Unidad: {{ unidad_display }}</p>
+    {% endif %}
+
+    {% if consulta == 'consumo_periodo' %}
+    <p>Período: mes {{ mes_inicial }} al mes {{ mes_final }}</p>
+    {% endif %}
+
+    {% if municipio %}
+    <p>Municipio: {{ municipio }}</p>
     {% endif %}
 
     {% if entidad_nombre %}
@@ -98,7 +106,7 @@
     {% endif %}
 
     {% if consumo_mensual %}
-    <h2>Consumo mensual ({{ unidad }})</h2>
+    <h2>Consumo mensual ({{ unidad_display }})</h2>
     <div class="table-wrapper">
         <table>
             <thead>
@@ -119,8 +127,55 @@
     </div>
     {% endif %}
 
+    {# ===== NUEVA: Consumo en un período (rango de meses) ===== #}
+    {% if periodo_mensual %}
+    <h2>Consumo del período (mes {{ mes_inicial }} al mes {{ mes_final }}) — {{ unidad_display }}</h2>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mes</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in periodo_mensual %}
+                <tr>
+                    <td>{{ item.nombre_mes }}</td>
+                    <td>{{ item.total|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
+    {# ===== NUEVA: Consumo por mes de un NAE ===== #}
+    {% if consumo_nae_mensual %}
+    <h2>NAE: {{ nae_info.codigo }} — {{ nae_info.actividad }}</h2>
+    <h3>Consumo mensual ({{ unidad_display }})</h3>
+    <div class="table-wrapper">
+        <table>
+            <thead>
+                <tr>
+                    <th>Mes</th>
+                    <th>Total</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for item in consumo_nae_mensual %}
+                <tr>
+                    <td>{{ item.nombre_mes }}</td>
+                    <td>{{ item.total|floatformat:2 }}</td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+    {% endif %}
+
     {% if top_entidades %}
-    <h2>Top 10 entidades con mayor consumo ({{ unidad }})</h2>
+    <h2>Top {{ top_limit|default:10 }} entidades con mayor consumo ({{ unidad_display }})</h2>
     <div class="table-wrapper">
         <table>
             <thead>
@@ -145,8 +200,10 @@
     </div>
     {% endif %}
 
+    {# ===== Listado genérico (sin_servicio, sin_nombre, entidades_por_fuente, entidades_por_sistema) ===== #}
     {% if listado %}
-    <h2>Listado de entidades</h2>
+    <h2>{{ titulo_listado|default:"Listado de entidades" }}</h2>
+    <p>Total: {{ listado|length }} entidad{{ listado|length|pluralize:"es" }}</p>
     <div class="table-wrapper">
         <table>
             <thead>
