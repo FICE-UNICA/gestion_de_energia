@@ -16,7 +16,7 @@ export function CrudForm({
   itemName,
   initialData = null,
   children,
-  customValidate, 
+  customValidate,
 }) {
   const methods = useForm();
   const { register, handleSubmit, formState: { errors }, reset, control } = methods;
@@ -24,7 +24,7 @@ export function CrudForm({
   const params = useParams();
   const isEditing = !!params.id;
   const formValues = useWatch({ control });
-  const submitAction = useRef('save'); // 'save' o 'saveAndContinue'
+  const submitAction = useRef('save');
 
   useEffect(() => {
     window.scrollTo(0, 0);
@@ -34,14 +34,45 @@ export function CrudForm({
     if (isEditing) {
       loadItem();
     } else if (initialData) {
-      reset(initialData);
+      reset(normalizeMultiFields(initialData));
     }
   }, []);
+
+  /**
+   * Convierte campos `multiautoselect` que vienen del backend
+   * a la forma [{ value, label }] usando `_info` cuando está disponible.
+   */
+  const normalizeMultiFields = (data) => {
+    const copy = { ...data };
+    fields.forEach(field => {
+      if (field.type !== 'multiautoselect') return;
+      const rawValue = copy[field.name];
+      if (!Array.isArray(rawValue)) return;
+
+      const alreadyObjects = rawValue.every(
+        v => v && typeof v === 'object' && 'value' in v
+      );
+      if (alreadyObjects) return;
+
+      const infoKey = `${field.name}_info`;
+      const info = copy[infoKey];
+
+      if (Array.isArray(info)) {
+        copy[field.name] = info.map(e => ({
+          value: e.id,
+          label: e.nombre || e.label || `#${e.id}`,
+        }));
+      }
+      // Si no hay info, se dejan los IDs planos; AsyncSelect los resolverá
+      // cuando el usuario haga búsqueda (aunque no aparecerán chips hasta entonces).
+    });
+    return copy;
+  };
 
   const loadItem = async () => {
     try {
       const data = await getItem(params.id);
-      reset(data);
+      reset(normalizeMultiFields(data));
     } catch (error) {
       console.error(`Error cargando ${itemName}:`, error);
       toast.error(`Error al cargar datos`);
@@ -49,22 +80,34 @@ export function CrudForm({
   };
 
   const performSave = async (data, stay) => {
-    // Validación personalizada si existe
     if (customValidate && !customValidate(data)) {
       return;
     }
 
     const processedData = { ...data };
-    // Eliminar campos auxiliares que no deben ir al backend
     delete processedData.confirm_password;
+
+    // Eliminar campos `_info` que son solo de lectura
+    Object.keys(processedData).forEach(key => {
+      if (key.endsWith('_info')) delete processedData[key];
+    });
 
     fields.forEach(field => {
       const value = data[field.name];
+
       if (field.type === 'autoselect') {
         if (value && typeof value === 'object' && 'value' in value) {
           processedData[field.name] = value.value;
         } else {
           processedData[field.name] = value;
+        }
+      } else if (field.type === 'multiautoselect') {
+        if (Array.isArray(value)) {
+          processedData[field.name] = value.map(v =>
+            v && typeof v === 'object' && 'value' in v ? v.value : v
+          );
+        } else {
+          processedData[field.name] = [];
         }
       } else if (field.type === 'number' && !field.required) {
         if (value === '' || value === null || value === undefined) {
@@ -80,7 +123,12 @@ export function CrudForm({
 
     fields.forEach(field => {
       const value = processedData[field.name];
-      if (!field.required && typeof value === 'string' && value.trim() === '') {
+      if (
+        !field.required &&
+        field.type !== 'multiautoselect' &&
+        typeof value === 'string' &&
+        value.trim() === ''
+      ) {
         processedData[field.name] = null;
       }
     });
@@ -94,7 +142,6 @@ export function CrudForm({
         await createItem(processedData);
         toast.success(`${itemName} creado correctamente`);
         if (stay) {
-          // Guardar y seguir creando → recargar la página
           setTimeout(() => window.location.reload(), 500);
         } else {
           navigate(basePath);
@@ -166,6 +213,7 @@ export function CrudForm({
                     <label className="block text-gray-700 text-sm font-medium mb-2">
                       {field.label}
                     </label>
+
                     {field.type === 'autoselect' ? (
                       field.loadOptions ? (
                         <Controller
@@ -207,6 +255,28 @@ export function CrudForm({
                           )}
                         />
                       )
+                    ) : field.type === 'multiautoselect' ? (
+                      <Controller
+                        name={field.name}
+                        control={control}
+                        rules={{ required: field.required }}
+                        render={({ field: { onChange, value } }) => (
+                          <AsyncSelect
+                            isMulti
+                            loadOptions={field.loadOptions}
+                            defaultOptions
+                            placeholder={field.placeholder || "Buscar..."}
+                            isClearable
+                            isSearchable
+                            noOptionsMessage={() => "No se encontraron resultados"}
+                            onChange={(selected) => onChange(selected || [])}
+                            value={value || []}
+                            getOptionValue={(option) => option.value}
+                            getOptionLabel={(option) => option.label}
+                            classNamePrefix="react-select"
+                          />
+                        )}
+                      />
                     ) : field.type === 'select' ? (
                       <select
                         {...register(field.name, { required: field.required })}
@@ -233,6 +303,7 @@ export function CrudForm({
                         className="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-red-500 focus:border-transparent"
                       />
                     )}
+
                     {errors[field.name] && (
                       <span className="text-red-600 text-sm mt-1">Este campo es requerido</span>
                     )}

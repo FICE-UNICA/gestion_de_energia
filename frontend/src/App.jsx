@@ -52,6 +52,20 @@ import { UsuarioIndex } from './pages/gestionar/usuario/index';
 import { UsuarioForm } from './pages/gestionar/usuario/formulario';
 import { UsuarioDetail } from './pages/gestionar/usuario/ver';
 
+// Gestión de Fuentes Renovables
+import { FuentesRenovablesIndex } from './pages/gestionar/fuentes_renovables';
+import { FuentesRenovablesForm } from './pages/gestionar/fuentes_renovables/formulario';
+import { FuentesRenovablesDetail } from './pages/gestionar/fuentes_renovables/ver';
+
+// Gestión de Sistemas Energéticos
+import { SistemasEnergeticosIndex } from './pages/gestionar/sistemas_energeticos';
+import { SistemasEnergeticosForm } from './pages/gestionar/sistemas_energeticos/formulario';
+import { SistemasEnergeticosDetail } from './pages/gestionar/sistemas_energeticos/ver';
+
+import { CategoriaSistemaEnergeticoIndex } from './pages/gestionar/categoria_sistema_energetico';
+import { CategoriaSistemaEnergeticoForm } from './pages/gestionar/categoria_sistema_energetico/formulario';
+import { CategoriaSistemaEnergeticoDetail } from './pages/gestionar/categoria_sistema_energetico/ver';
+
 import { GestionarBD } from './pages/gestionar_bd.jsx';
 
 function AppContent() {
@@ -65,7 +79,7 @@ function AppContent() {
     <div className="min-h-screen">
       {shouldShowNavigation && <Navegación />}
 
-      <Toaster 
+      <Toaster
         toastOptions={{
           success: { duration: 3000 },
           error: { duration: 4000 },
@@ -132,6 +146,24 @@ function AppContent() {
         <Route path="/gestionar/usuario/crear" element={<SuperUserRoute><UsuarioForm /></SuperUserRoute>} />
         <Route path="/gestionar/usuario/editar/:id" element={<SuperUserRoute><UsuarioForm /></SuperUserRoute>} />
         <Route path="/gestionar/usuario/ver/:id" element={<SuperUserRoute><UsuarioDetail /></SuperUserRoute>} />
+
+        {/* Gestión de Fuentes Renovables */}
+        <Route path="/gestionar/fuentes-renovables" element={<AdminRoute><FuentesRenovablesIndex /></AdminRoute>} />
+        <Route path="/gestionar/fuentes-renovables/crear" element={<AdminRoute><FuentesRenovablesForm /></AdminRoute>} />
+        <Route path="/gestionar/fuentes-renovables/editar/:id" element={<AdminRoute><FuentesRenovablesForm /></AdminRoute>} />
+        <Route path="/gestionar/fuentes-renovables/ver/:id" element={<AdminRoute><FuentesRenovablesDetail /></AdminRoute>} />
+
+        {/* Gestión de Sistemas Energéticos */}
+        <Route path="/gestionar/sistemas-energeticos" element={<AdminRoute><SistemasEnergeticosIndex /></AdminRoute>} />
+        <Route path="/gestionar/sistemas-energeticos/crear" element={<AdminRoute><SistemasEnergeticosForm /></AdminRoute>} />
+        <Route path="/gestionar/sistemas-energeticos/editar/:id" element={<AdminRoute><SistemasEnergeticosForm /></AdminRoute>} />
+        <Route path="/gestionar/sistemas-energeticos/ver/:id" element={<AdminRoute><SistemasEnergeticosDetail /></AdminRoute>} />
+
+        {/* Gestión de Categoría Sistema Energético */}
+        <Route path="/gestionar/categoria-sistema-energetico" element={<AdminRoute><CategoriaSistemaEnergeticoIndex /></AdminRoute>} />
+        <Route path="/gestionar/categoria-sistema-energetico/crear" element={<AdminRoute><CategoriaSistemaEnergeticoForm /></AdminRoute>} />
+        <Route path="/gestionar/categoria-sistema-energetico/editar/:id" element={<AdminRoute><CategoriaSistemaEnergeticoForm /></AdminRoute>} />
+        <Route path="/gestionar/categoria-sistema-energetico/ver/:id" element={<AdminRoute><CategoriaSistemaEnergeticoDetail /></AdminRoute>} />
 
         <Route path="/gestionar/base_datos" element={<SuperUserRoute><GestionarBD /></SuperUserRoute>} />
 

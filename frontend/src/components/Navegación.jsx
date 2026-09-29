@@ -24,7 +24,7 @@ export function Navegación() {
   // Construir las secciones dinámicamente
   const sections = [
     {
-      title: "Entidades",
+      title: "Entidades 🏢",
       items: [
         { name: 'Organismo', path: '/gestionar/organismo' },
         { name: 'Entidad', path: '/gestionar/entidad' },
@@ -32,13 +32,16 @@ export function Navegación() {
       ]
     },
     {
-      title: "Energía eléctrica",
+      title: "Energía ⚡",
       items: [
         { name: 'Servicio eléctrico', path: '/gestionar/servicio-electrico' },
+        { name: 'Fuentes renovables', path: '/gestionar/fuentes-renovables' },
+        { name: 'Categorías Sistemas Energéticos', path: '/gestionar/categoria-sistema-energetico' },
+        { name: 'Sistemas energéticos', path: '/gestionar/sistemas-energeticos' },
       ]
     },
     {
-      title: "Localidad",
+      title: "Localidad 🌍",
       items: [
         { name: 'Provincia', path: '/gestionar/provincia' },
         { name: 'Municipio', path: '/gestionar/municipio' },

@@ -240,7 +240,7 @@ export function ServicioElectricoIndex() {
         </div>
 
         <CrudIndex
-          title="Gestionar Servicios Eléctricos"
+          title="Gestionar Servicios Eléctricos ⚡"
           items={data}
           totalPages={totalPages}
           currentPage={currentPage}

@@ -54,3 +54,14 @@ export const deleteMunicipio = async (id) => {
     throw error;
   }
 };
+
+export const searchMunicipio = async (inputValue) => {
+  const { data } = await api.get('/municipios/', {
+    params: { search: inputValue },
+  });
+  const list = data.results || data;
+  return list.map((m) => ({
+    value: m.id,
+    label: m.nombre,
+  }));
+};

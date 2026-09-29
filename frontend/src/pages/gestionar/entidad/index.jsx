@@ -151,7 +151,7 @@ export function EntidadIndex() {
       </div>
 
       <CrudIndex
-        title="Gestionar Entidades"
+        title="Gestionar Entidades 🏢"
         items={data}
         totalPages={totalPages}
         currentPage={currentPage}
