@@ -1,36 +1,29 @@
 # ⚡ Sistema de Gestión Energética
 
-Plataforma web para la gestión integral de la estrategia de desarrollo energético territorial. Desarrollada con Django REST Framework (backend) y React (frontend), facilita la administración de entidades y servicios eléctricos
+Aplicación web para la gestión de la información relacionada con el uso racional de la energía eléctrica en la provincia Ciego de Ávila. Desarrollada con Django REST Framework y React, facilita la administración de entidades y servicios eléctricos.
 
 ## 🚀 Características principales
 
-- **Autenticación de usuarios** con tokens. 
-- **Gestión completa de entidades**, organismos, servicios eléctricos, provincias y municipios.
-- **Búsqueda en tiempo real** con autocompletado (`react-select/async`) y filtros múltiples en listados.
-- **Paginación del lado del servidor** para manejar grandes volúmenes de datos.
-- **Gráfico de consumo anual** (barras) usando Recharts.
-- **Notificaciones visuales** con `react-hot-toast`.
-- **Diseño responsive** con Tailwind CSS (colores amarillo‑rojo).
-- **Arquitectura de 3 capas** (frontend React, backend DRF, PostgreSQL).
+- Autenticación de usuarios con tokens. 
+- Gestión completa de entidades, organismos, servicios eléctricos, provincias y municipios.
+- Generación de reportes y gráficos de consumo.
+- Diseño responsive con Tailwind CSS.
+
 
 ## 🛠️ Tecnologías utilizadas
 
 ### Backend
-- Python 3.14
-- Django 6.0.2
-- Django REST Framework
-- PostgreSQL (local y Supabase)
-- `django-cors-headers`
-- Token Authentication
+![Python](https://img.shields.io/badge/Python-3776AB?style=for-the-badge&logo=python&logoColor=white)
+![Django](https://img.shields.io/badge/Django-092E20?style=for-the-badge&logo=django&logoColor=white)
+![Django REST](https://img.shields.io/badge/Django_REST-ff1709?style=for-the-badge&logo=django&logoColor=white)
 
 ### Frontend
-- React 18 + Vite
-- React Router DOM
-- React Hook Form
-- React Select (AsyncSelect)
-- Recharts (gráficos)
-- Axios
-- Tailwind CSS
+![React](https://img.shields.io/badge/React-61DAFB?style=for-the-badge&logo=react&logoColor=black)
+![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS-38B2AC?style=for-the-badge&logo=tailwind-css&logoColor=white)
+
+### Base de Datos
+![PostgreSQL](https://img.shields.io/badge/PostgreSQL-4169E1?style=for-the-badge&logo=postgresql&logoColor=white)
+
 
 ### Despliegue
 - Render (backend y frontend)
@@ -49,18 +42,6 @@ app_gestion/
 ├── urls/                 # Configuración de rutas (auth, api, consultas)
 └── admin.py              # Registro en el administrador de Django
 ```
-
-### 🔌 API endpoints principales
-
-| Método | Endpoint | Descripción |
-|--------|----------|-------------|
-| POST   | `/login/` | Inicio de sesión (devuelve token) |
-| POST   | `/logout/` | Cierre de sesión (elimina token) |
-| GET    | `/perfil/` | Datos del usuario autenticado |
-| CRUD   | `/organismo/` | Gestión de organismos |
-| CRUD   | `/entidades/` | Gestión de entidades  |
-| CRUD   | `/servicios-electricos/` | Gestión de servicios eléctricos |
-| GET    | `/consultas/consumo-por-mes/` | Datos agregados para el gráfico anual |
 
 
 ### 🖼️ Imágenes de la aplicación
@@ -131,12 +112,6 @@ app_gestion/
 
 <br>
 
-**Gráfico de consumo energético**
-
-<img src="img/gráfico.png" alt="Gráfico de consumo energético">
-
-<br>
-
 
 **Consultas**
 
@@ -144,6 +119,12 @@ app_gestion/
 <br>
 
 <img src="img/consultas_2.png" alt="Página de consultas">
+<br>
+
+<img src="img/consumo_por_mes_entidad.png" alt="Página de consultas">
+<br>
+
+<img src="img/consumo_por_mes_entidad2.png" alt="Página de consultas">
 <br>
 
 
